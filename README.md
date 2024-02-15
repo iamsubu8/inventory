@@ -35,7 +35,7 @@ The application should now be accessible at `http://127.0.0.1:8000/`.
 
 
 User- Store Manager -
-    username- Store
+    username- store
     password-123qwe..
 
 User- Deparment Manager-
