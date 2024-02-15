@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'index.css' %}" rel="stylesheet">
+    <title>{% block title %}{% endblock %}| Inventory</title>
+  </head>
+
+<body>
+  <header>
+    {{request.user}}
+  </header>
+
+  <div class="sidebar">
+    {% if request.path == '/productList' %}
+    <a class="active" href="productList">Products</a>
+    {% else %}
+    <a href="productList">Products</a>
+    {% endif %}
+    {% if request.path == '/pending' %}
+    <a class="active" href="pending">Pending Products</a>
+    {% else %}
+    <a href="pending">Pending Products</a>
+    {% endif %}
+    <a href="logout">Logout</a>
+  </div>
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+
+</html>

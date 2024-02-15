@@ -1,0 +1,174 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}PRODUCTS {% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'product.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    {% if messages %}
+    {% for message in messages %}
+    <script type="text/javascript">
+        alert("{{ message }}");
+    </script>
+    {% endfor %}
+    {% endif %}
+
+    <div>
+        <button onclick="openAddModal()">Add New Product</button>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sl.no</th>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Vendor</th>
+                    <th>MRP</th>
+                    <th>Batch No.</th>
+                    <th>Batch Date</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            {% for each in product %}
+            <tbody>
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{each.product_Id}}</td>
+                    <td>{{each.product_Name}}</td>
+                    <td>{{each.vendor}}</td>
+                    <td>{{each.mrp}}</td>
+                    <td>{{each.batch_num}}</td>
+                    <td>{{each.batch_date}}</td>
+                    <td>{{each.quantity}}</td>
+                    <td>
+                        <button onclick="openEditModal('{{ each.product_Id }}', '{{ each.product_Name }}', '{{ each.vendor }}', '{{ each.mrp }}', '{{ each.batch_num }}', '{{ each.batch_date }}', '{{ each.quantity }}')">Edit</button>
+                        <button onclick="openRemoveModal('{{ each.product_Id }}')">Remove</button>
+                    </td>
+
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2>Add New Product</h2>
+            <div>
+                <form action="addproduct" method="post">
+                    {% csrf_token %}
+                    <label>Product ID</label>
+                    <input type="text" name="product_id">
+
+                    <label>Product Name</label>
+                    <input type="text" name="product_name">
+
+                    <label>Vendor</label>
+                    <input type="text" name="vendor">
+
+                    <label>MRP</label>
+                    <input type="text" name="mrp">
+
+                    <label>Batch Number</label>
+                    <input type="text" name="batch_number">
+
+                    <label>Batch Date</label>
+                    <input type="date" name="batch_date"><br>
+
+                    <label>Quantity</label>
+                    <input type="number" name="quantity"><br>
+
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Item</h2>
+            <div>
+                <form action="edit" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" id="editProductId">
+                    <label>Product Name</label>
+                    <input type="text" name="product_name" id="editProductName">
+                    <label>Vendor</label>
+                    <input type="text" name="vendor" id="editVendor">
+                    <label>MRP</label>
+                    <input type="text" name="mrp" id="editMRP">
+                    <label>Batch Number</label>
+                    <input type="text" name="batch_number" id="editBatchNumber">
+                    <label>Batch Date</label>
+                    <input type="date" name="batch_date" id="editBatchDate"><br>
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" id="editQuantity"><br>
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="removeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRemoveModal()">&times;</span>
+            <h2>Remove Item</h2>
+            <p>Are you sure you want to remove this item?</p>
+            <form action="remove" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" id="deleteProductId">
+                <button type="submit">Yes</button>
+                <button onclick="closeRemoveModal()">No</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Functions to open and close modal forms
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+        function openEditModal(productId, productName, vendor, mrp, batchNumber, batchDate, quantity) {
+            document.getElementById("editProductId").value = productId;
+            document.getElementById("editProductName").value = productName;
+            document.getElementById("editVendor").value = vendor;
+            document.getElementById("editMRP").value = mrp;
+            document.getElementById("editBatchNumber").value = batchNumber;
+            document.getElementById("editBatchDate").value = batchDate;
+            document.getElementById("editQuantity").value = quantity;
+            // Show the modal
+            document.getElementById("editModal").style.display = "block";
+            console.log(productId)
+        }
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        function openRemoveModal(productId) {
+            document.getElementById("deleteProductId").value = productId;
+            document.getElementById('removeModal').style.display = 'block';
+            console.log(productId)
+        }
+        function closeRemoveModal() {
+            document.getElementById('removeModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
+{% endblock %}

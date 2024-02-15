@@ -1,0 +1,113 @@
+{% extends 'index.html' %}
+{% load static%}
+{% block title %}PENDING {% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{% static 'pending.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+  {% if messages %}
+  {% for message in messages %}
+  <script type="text/javascript">
+    alert("{{ message }}");
+  </script>
+  {% endfor %}
+  {% endif %}
+
+
+  {% for role in request.user.userprofile.roles.all %}
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>Sl.no</th>
+          <th>ID</th>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>MRP</th>
+          <th>Batch No.</th>
+          <th>Batch Date</th>
+          <th>Quantity</th>
+          <th>Request Type</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      {%for each in product %}
+      <tbody>
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{each.product.product_id}}</td>
+          <td>{{each.product.product_name}}</td>
+          <td>{{each.product.vendor}}</td>
+          <td>{{each.product.mrp}}</td>
+          <td>{{each.product.batch_number}}</td>
+          <td>{{each.product.batch_date}}</td>
+          <td>{{each.product.quantity}}</td>
+          <td>{{each.action}}</td>
+          {% if role.name == 'store' %}
+          <td>
+            {% if each.status == 'pending' %}
+            <span>
+              <button onclick="approval('{{each.id}}')">Approve</button>
+              <button onclick="reject('{{each.id}}')">Reject</button>
+            </span>
+            {% else %}    
+            {{each.status}}
+            {% endif %}
+            <!-- <button onclick="openPendingModal('{{ each.product_Id }}')">{{ each.status }}</button> -->
+          </td>
+          {% else %}
+          <td>
+            {{ each.status }}
+          </td>
+          {% endif %}
+        </tr>
+      </tbody>
+      {%endfor%}
+    </table>
+  </div>
+
+  <div id="pendingModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closePendingModal()">&times;</span>
+      <h2>Aprove Product</h2>
+      <p>Are you sure you want to Approve this Product?</p>
+      <form action="ApprovePending" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="pendingProductId">
+        <button type="submit">Yes</button>
+        <button onclick="closePendingModal()">No</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openPendingModal(productId) {
+      document.getElementById("pendingProductId").value = productId;
+      document.getElementById('pendingModal').style.display = 'block';
+      console.log(productId)
+    }
+    function closePendingModal() {
+      document.getElementById('pendingModal').style.display = 'none';
+    }
+
+    function approval(record_id){
+      window.location.href = '/ApprovePending/'+record_id;
+    }
+    
+    function reject(record_id){
+      window.location.href = '/rejectPending/'+record_id;
+    }
+  </script>
+  {% endfor %}
+</body>
+
+</html>
+{% endblock %}
