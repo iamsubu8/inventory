@@ -31,7 +31,7 @@ def logout(request):
 # @unauthenticated_user
 def Product(request):
     try:
-        # print(request.user)
+        print(request.user)
         if request.user.userprofile.roles.filter(Q(name='store') | Q(name='dprt')).exists():
             product=Inventory.objects.filter(status='approved').order_by('-id')
 
