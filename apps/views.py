@@ -31,7 +31,7 @@ def logout(request):
 # @unauthenticated_user
 def Product(request):
     try:
-        print(request.user)
+        # print(request.user)
         if request.user.userprofile.roles.filter(Q(name='store') | Q(name='dprt')).exists():
             product=Inventory.objects.filter(status='approved').order_by('-id')
 
@@ -49,13 +49,13 @@ def AddPRODUCT(request):
         if request.method == "POST":
             if request.user.userprofile.roles.filter(name='store').exists():
                 product=Inventory(
-                    product_Id=request.POST.get('id'),
-                    product_Name=request.POST.get('name'),
+                    product_Id=request.POST.get('product_id'),
+                    product_Name=request.POST.get('product_name'),
                     vendor=request.POST.get('vendor'),
                     mrp=request.POST.get('mrp'),
-                    batch_num=request.POST.get('b_no'),
-                    batch_date=request.POST.get('date'),
-                    quantity=request.POST.get('qty'),
+                    batch_num=request.POST.get('batch_number'),
+                    batch_date=request.POST.get('batch_date'),
+                    quantity=request.POST.get('quantity'),
                     status='approved'
                 )
                 product.save()
